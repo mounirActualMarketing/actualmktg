@@ -9,12 +9,17 @@ interface NavLinkProps {
   href: string;
 }
 
+interface MenuLinkProps extends NavLinkProps {
+  setIsOpen: (value: boolean) => void;
+}
+
 interface NavLeftProps {
   setIsOpen: (value: boolean | ((prevVar: boolean) => boolean)) => void;
 }
 
 interface NavMenuProps {
   isOpen: boolean;
+  setIsOpen: (value: boolean) => void;
 }
 
 const Logo = () => {
@@ -81,7 +86,7 @@ const NavRight = () => {
   );
 };
 
-const NavMenu = ({ isOpen }: NavMenuProps) => {
+const NavMenu = ({ isOpen, setIsOpen }: NavMenuProps) => {
   return (
     <motion.div
       variants={menuVariants}
@@ -92,17 +97,21 @@ const NavMenu = ({ isOpen }: NavMenuProps) => {
         pointerEvents: isOpen ? "auto" : "none",
       }}
     >
-      <MenuLink text="Home" href="/" />
-      <MenuLink text="About" href="/about" />
-      <MenuLink text="Services" href="/services" />
-      <MenuLink text="Contact" href="/contact" />
+      <MenuLink text="Home" href="/" setIsOpen={setIsOpen} />
+      <MenuLink text="About" href="/about" setIsOpen={setIsOpen} />
+      <MenuLink text="Services" href="/services" setIsOpen={setIsOpen} />
+      <MenuLink text="Contact" href="/contact" setIsOpen={setIsOpen} />
     </motion.div>
   );
 };
 
-const MenuLink = ({ text, href }: NavLinkProps) => {
+const MenuLink = ({ text, href, setIsOpen }: MenuLinkProps) => {
+  const handleClick = () => {
+    setIsOpen(false);
+  };
+
   return (
-    <Link href={href} className="h-[30px] overflow-hidden font-medium text-lg flex items-start gap-2">
+    <Link href={href} className="h-[30px] overflow-hidden font-medium text-lg flex items-start gap-2" onClick={handleClick}>
       <motion.span
         variants={menuLinkVariants}
         className="flex items-center gap-2"
@@ -170,7 +179,7 @@ export const FlipNav = () => {
     <nav className="bg-white p-4 border-b-[1px] border-gray-200 flex items-center justify-between relative z-50">
       <NavLeft setIsOpen={setIsOpen} />
       <NavRight />
-      <NavMenu isOpen={isOpen} />
+      <NavMenu isOpen={isOpen} setIsOpen={setIsOpen} />
     </nav>
   );
 }; 
